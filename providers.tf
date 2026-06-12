@@ -6,9 +6,9 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "devops-project-rg"
+    resource_group_name  = "devops-state-rg"
     storage_account_name = "devopsstateaccount"
-    container_name       = "tfstate"
+    container_name       = "monitoring-state"
     # KEY IS THE MAGIC PART:
     # Use different keys to separate your projects
     key                  = "monitoring.tfstate" 
