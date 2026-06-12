@@ -1,20 +1,33 @@
 terraform {
   required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "2.14.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "2.31.0"
-    }
+    azurerm = { source = "hashicorp/azurerm", version = "~> 3.0" }
+    kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0" }
+    helm = { source = "hashicorp/helm", version = "~> 2.0" }
   }
 }
 
-# These providers will automatically pick up the credentials 
-# from the 'az aks get-credentials' command in your GitHub Action.
-provider "helm" {
-  kubernetes {}
+provider "azurerm" {
+  features {}
 }
 
-provider "kubernetes" {}
+# The data source for AKS authentication lives here so it's globally available
+data "azurerm_kubernetes_cluster" "aks" {
+  name                = var.aks_name
+  resource_group_name = var.resource_group_name
+}
+
+provider "kubernetes" {
+  host                   = data.azurerm_kubernetes_cluster.aks.kube_config.0.host
+  client_certificate     = base64decode(data.azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+  client_key             = base64decode(data.azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.azurerm_kubernetes_cluster.aks.kube_config.0.host
+    client_certificate     = base64decode(data.azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+    client_key             = base64decode(data.azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+    cluster_ca_certificate = data.azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate
+  }
+}
