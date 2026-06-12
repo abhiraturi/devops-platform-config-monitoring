@@ -4,6 +4,16 @@ terraform {
     kubernetes = { source = "hashicorp/kubernetes", version = "~> 2.0" }
     helm = { source = "hashicorp/helm", version = "~> 2.0" }
   }
+
+  backend "azurerm" {
+    resource_group_name  = "devops-project-rg"
+    storage_account_name = "devopsstateaccount"
+    container_name       = "tfstate"
+    # KEY IS THE MAGIC PART:
+    # Use different keys to separate your projects
+    key                  = "monitoring.tfstate" 
+  }
+
 }
 
 provider "azurerm" {
