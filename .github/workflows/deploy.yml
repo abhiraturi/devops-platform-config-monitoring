@@ -32,4 +32,4 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -input=false -var-file="terraform.tfvars" -out=tfplan
+        run: terraform apply -input=false tfplan
