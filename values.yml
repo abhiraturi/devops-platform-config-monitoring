@@ -1,0 +1,11 @@
+prometheus:
+  prometheusSpec:
+    # This allows Prometheus to find ServiceMonitors in other namespaces
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {} 
+
+grafana:
+  adminPassword: "Password123!" # Change this!
+  persistence:
+    enabled: true
+    size: 10Gi
