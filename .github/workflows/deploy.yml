@@ -19,7 +19,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Get AKS Credentials
-        run: az aks get-credentials --resource-group <YOUR_RG_NAME> --name <YOUR_CLUSTER_NAME> --overwrite-existing
+        run: az aks get-credentials --resource-group devops-project-rg --name devops-cluster --overwrite-existing
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v4
